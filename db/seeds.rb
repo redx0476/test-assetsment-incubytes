@@ -97,8 +97,13 @@ end
 PayBand.insert_all(band_rows)
 
 puts "Seeding HR manager user..."
+hr_password = ENV.fetch("SEED_HR_PASSWORD") do
+  raise "SEED_HR_PASSWORD must be set to seed in production" if Rails.env.production?
+
+  "password123"
+end
 User.find_or_create_by!(email: "hr@acme.test") do |user|
-  user.password = ENV.fetch("SEED_HR_PASSWORD", "password123")
+  user.password = hr_password
   user.role = :hr_manager
 end
 

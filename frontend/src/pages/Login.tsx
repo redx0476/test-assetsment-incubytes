@@ -16,6 +16,10 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
+const demoCredentials = import.meta.env.DEV
+  ? { email: "hr@acme.test", password: "password123" }
+  : { email: "", password: "" };
+
 export function Login() {
   const { login, user, loading } = useAuth();
   const navigate = useNavigate();
@@ -27,7 +31,7 @@ export function Login() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { email: "hr@acme.test", password: "password123" },
+    defaultValues: demoCredentials,
   });
 
   useEffect(() => {

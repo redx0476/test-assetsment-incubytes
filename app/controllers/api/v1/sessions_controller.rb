@@ -3,10 +3,13 @@ module Api
     class SessionsController < BaseController
       skip_before_action :authenticate!, only: :create
 
-      def create
-        user = User.find_by(email: params[:email].to_s.strip.downcase)
+      rate_limit to: 10, within: 3.minutes, only: :create,
+        with: -> { render json: { error: "too_many_requests" }, status: :too_many_requests }
 
-        if user&.authenticate(params[:password].to_s)
+      def create
+        user = User.authenticate_by(email: params[:email].to_s.strip.downcase, password: params[:password].to_s)
+
+        if user
           _session, token = Session.issue(user)
           render json: { token: token, user: user_json(user) }, status: :created
         else
