@@ -10,6 +10,10 @@ Rails.application.routes.draw do
       post "session", to: "sessions#create"
       get "session", to: "sessions#show"
       delete "session", to: "sessions#destroy"
+
+      resources :employees, only: %i[index show create update destroy] do
+        resources :salaries, only: %i[create]
+      end
     end
   end
 
