@@ -14,6 +14,12 @@ Rails.application.routes.draw do
       resources :employees, only: %i[index show create update destroy] do
         resources :salaries, only: %i[create]
       end
+
+      namespace :analytics do
+        get "dashboard", to: "dashboard#show"
+        get "breakdown", to: "breakdowns#show"
+        get "equity", to: "equity#show"
+      end
     end
   end
 
